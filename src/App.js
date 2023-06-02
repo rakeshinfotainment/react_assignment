@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Page1 from './pages/Page1';
 import Page2 from './pages/Page2';
-import './App.css';
+import './App.css'
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route exact path='/' element={<Page1 />} />
           <Route path='/page2' element={<Page2 />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
         </div>
       </Router>

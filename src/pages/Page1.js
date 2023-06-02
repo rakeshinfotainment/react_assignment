@@ -15,13 +15,14 @@ const reducerFunction=(state={data:[], page:1}, action)=>{
 function Page1() {
     const [list, setList]=useReducer(reducerFunction, {data:[], page:1})
     const [checkList, setCheckList]=useState([]);
+    const [firstLoad, setFirstLoad]=useState(0)
     const [search, setSearch]=useState('');
     //const storeData=useSelector((state)=>state.data)
     const dispatch=useDispatch()
     const fetchList = () => {
         fetch('https://reqres.in/api/users?page='+list.page)
         .then(res=>res.json())
-        .then(data=>{console.log(data);setList({type: "ADD_LIST", data:data.data})})
+        .then(data=>{console.log(data);setFirstLoad(1); setList({type: "ADD_LIST", data:data.data})})
       }
       const saveList=()=>{
         let data=list.data.filter(x=>checkList.includes(x.id))
@@ -58,10 +59,10 @@ function Page1() {
     }
   return (
     <>
-    <div className='container'>Get data from page: <input type="number" style={{width:50}} value={list.page} onChange={(e)=>setList({type: "PAGE_CHANGE", page:e.target.value})} /> <button onClick={()=>fetchList()} className='btn btn-sm btn-primary'>Go</button><button style={{float:'right'}} onClick={()=>saveList()} className='btn btn-sm btn-primary'>Save Selected</button></div>
+    <div className='container'>Get data from page: <input type="number" data-testid="page_number" style={{width:50}} value={list.page} onChange={(e)=>setList({type: "PAGE_CHANGE", page:e.target.value})} /> <button onClick={()=>fetchList()} className='btn btn-sm btn-primary' data-testid="go_button">Go</button><button style={{float:'right'}} onClick={()=>saveList()} className='btn btn-sm btn-primary'>Save Selected</button></div>
     <div style={{height: '60vh', width:'80vw', margin:'auto', marginTop: 50, overflow:'scroll'}}>
         {
-            list.data && list.data.length>0 ? showList() : <div className='alert alert-info'>Data not available! Please enter page no and click on Go to fetch data.</div>
+            firstLoad===0 ? <div className='alert alert-info'>Data not available! Please enter page no and click on Go to fetch data.</div> : list.data && list.data.length>0 ? showList() : <div className='alert alert-info'>Data not available! Please check another page no.</div>
         }
         
     </div>
